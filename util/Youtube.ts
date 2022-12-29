@@ -10,9 +10,13 @@ export class Youtube {
     const response = await fetch(
       `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${id}&key=${key}&pageToken=${token}`
     );
+    if (!response.ok)
+      throw new Error("Received an invalid response from the Youtube API");
+
     const json = await response.json();
     const { items, nextPageToken } = json;
     videos = [...videos, ...items];
+
     if (nextPageToken) {
       const nextPage = await this.getAllVideosFromPlaylist(id, nextPageToken);
       videos = [...videos, ...nextPage];
