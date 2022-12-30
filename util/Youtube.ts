@@ -1,3 +1,4 @@
+import IPlaylist from "../interfaces/IPlaylist";
 import { IVideo } from "../interfaces/IVideo";
 
 export class Youtube {
@@ -22,5 +23,16 @@ export class Youtube {
       videos = [...videos, ...nextPage];
     }
     return videos;
+  };
+
+  static getPlaylistInfo = async (id: String): Promise<IPlaylist> => {
+    const key = process.env.API_KEY;
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/playlists?part=contentDetails,snippet,status&id=${id}&key=${key}`
+    );
+    if (!response.ok)
+      throw new Error("Received an invalid response from the Youtube API");
+    const json = await response.json();
+    return json;
   };
 }
