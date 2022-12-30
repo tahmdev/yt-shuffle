@@ -1,13 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import IPlaylist from "../interfaces/IPlaylist";
+import httpErrorHandling from "../util/httpErrorHandling";
 import { Youtube } from "../util/Youtube";
 
 export class PlaylistController {
   static get = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { id } = req.query;
-    if (typeof id !== "string") throw new Error();
-    const playlist: IPlaylist = { id: "a", name: "a" };
-    const videos = await Youtube.getAllVideosFromPlaylist(id);
-    res.status(200).json(videos);
+    try {
+      const { id } = req.query;
+      if (typeof id !== "string") throw new Error();
+      const playlist = await Youtube.getPlaylistInfo(id);
+      res.status(200).json(playlist);
+    } catch (error) {
+      httpErrorHandling(error, res);
+    }
   };
 }
