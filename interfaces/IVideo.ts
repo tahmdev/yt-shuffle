@@ -3,7 +3,7 @@ export interface IVideo {
   channelId: string;
   title: string;
   description: string;
-  thumbnails: Thumbnails;
+  thumbnails: IThumbnails;
   channelTitle: string;
   playlistId: string;
   position: number;
@@ -17,7 +17,7 @@ interface IResourceID {
   videoId: string;
 }
 
-interface Thumbnails {
+export interface IThumbnails {
   default: IResolution;
   medium: IResolution;
   high: IResolution;
