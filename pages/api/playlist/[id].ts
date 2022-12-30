@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PlaylistController } from "../../../controllers/playlistController";
 import IPlaylist from "../../../interfaces/IPlaylist";
+import httpErrorHandling from "../../../util/httpErrorHandling";
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any>
+  res: NextApiResponse<IPlaylist>
 ) {
   try {
     switch (req.method) {
@@ -12,5 +13,7 @@ export default function handler(
         PlaylistController.get(req, res);
         break;
     }
-  } catch (error) {}
+  } catch (error) {
+    httpErrorHandling(error, res);
+  }
 }

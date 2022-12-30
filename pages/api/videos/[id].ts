@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { VideoController } from "../../../controllers/videoController";
 import { IVideo } from "../../../interfaces/IVideo";
+import httpErrorHandling from "../../../util/httpErrorHandling";
 
 export default function handler(
   req: NextApiRequest,
@@ -12,5 +13,7 @@ export default function handler(
         VideoController.get(req, res);
         break;
     }
-  } catch (error) {}
+  } catch (error) {
+    httpErrorHandling(error, res);
+  }
 }
