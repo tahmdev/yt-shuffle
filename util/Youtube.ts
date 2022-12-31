@@ -37,5 +37,15 @@ export class Youtube {
     if (json.items.length == 0) throw new HttpError(404);
     return json.items[0];
   };
+
+  static playlistIdFromUrl = (url: string): string => {
+    const reg = new RegExp("[&?]list=([a-z0-9_-]+)", "i");
+    const match = reg.exec(url);
+
+    if (match && match[1].length > 0) {
+      return match[1];
+    } else {
+      return url;
+    }
   };
 }
