@@ -1,3 +1,4 @@
+import { HttpError } from "../errors/httpError";
 import IPlaylist from "../interfaces/IPlaylist";
 import { IVideo } from "../interfaces/IVideo";
 
@@ -33,6 +34,8 @@ export class Youtube {
     if (!response.ok)
       throw new Error("Received an invalid response from the Youtube API");
     const json = await response.json();
-    return json;
+    if (json.items.length == 0) throw new HttpError(404);
+    return json.items[0];
+  };
   };
 }
