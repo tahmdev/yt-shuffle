@@ -1,7 +1,18 @@
 import Head from "next/head";
+import { useEffect, useState } from "react";
+import useLocalstorage from "../hooks/useLocalStorage";
+import IPlaylist from "../interfaces/IPlaylist";
 import styles from "../styles/Home.module.css";
+import { Youtube } from "../util/Youtube";
 
 export default function Home() {
+  const [localPlaylistIDs, setLocalPlaylistIDs] = useLocalstorage<string[]>(
+    "playlists",
+    []
+  );
+
+  const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
+
   return (
     <>
       <Head>
