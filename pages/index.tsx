@@ -25,6 +25,10 @@ export default function Home() {
     setLocalPlaylistIDs([...newState].map((e) => e.id));
   }
 
+  useEffect(() => {
+    localPlaylistIDs.forEach((e) => addPlaylist(e));
+  }, []);
+
   return (
     <>
       <Head>
