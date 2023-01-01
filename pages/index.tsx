@@ -12,6 +12,18 @@ export default function Home() {
   );
 
   const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
+  async function addPlaylist(idOrUrl: string) {
+    const id = Youtube.playlistIdFromUrl(idOrUrl);
+    const response = await fetch(`api/playlist/${id}`);
+    if (!response.ok) return;
+    const newPlaylist: IPlaylist = await response.json();
+
+    // Don't allow duplicates
+    if (playlists.some((e) => e.id === newPlaylist.id)) return;
+    const newState = [...playlists, newPlaylist];
+    setPlaylists([...newState]);
+    setLocalPlaylistIDs([...newState].map((e) => e.id));
+  }
 
   return (
     <>
