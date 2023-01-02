@@ -11,7 +11,6 @@ export default function Home() {
     "playlists",
     []
   );
-
   const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
   const [currentInput, setCurrentInput] = useState<string>("");
 
@@ -21,12 +20,15 @@ export default function Home() {
     if (!response.ok) return;
     const newPlaylist: IPlaylist = await response.json();
 
-    // Don't allow duplicates
-    if (playlists.some((e) => e.id === newPlaylist.id)) return;
-    const newState = [...playlists, newPlaylist];
-    setPlaylists([...newState]);
-    setLocalPlaylistIDs([...newState].map((e) => e.id));
+    setPlaylists((prev) =>
+      [...prev, newPlaylist].sort((a, b) =>
+        a.snippet.title.localeCompare(b.snippet.title)
+      )
+    );
+    setLocalPlaylistIDs([...new Set([...localPlaylistIDs, newPlaylist.id])]);
   }
+
+  function removePlaylist(id: string) {}
 
   useEffect(() => {
     localPlaylistIDs.forEach((e) => addPlaylist(e));
