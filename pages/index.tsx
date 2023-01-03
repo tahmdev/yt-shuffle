@@ -28,7 +28,10 @@ export default function Home() {
     setLocalPlaylistIDs([...new Set([...localPlaylistIDs, newPlaylist.id])]);
   }
 
-  function removePlaylist(id: string) {}
+  function removePlaylist(id: string) {
+    setPlaylists((prev) => prev.filter((e) => e.id !== id));
+    setLocalPlaylistIDs((prev) => prev.filter((e) => e !== id));
+  }
 
   useEffect(() => {
     localPlaylistIDs.forEach((e) => addPlaylist(e));
@@ -60,7 +63,7 @@ export default function Home() {
           {playlists.map((e, i) => {
             return (
               <li key={i}>
-                <PlaylistCard playlist={e} />
+                <PlaylistCard playlist={e} removePlaylist={removePlaylist} />
               </li>
             );
           })}
