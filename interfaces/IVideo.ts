@@ -1,4 +1,11 @@
 export interface IVideo {
+  etag: string;
+  id: string;
+  kind: string;
+  snippet: snippet;
+}
+
+interface snippet {
   publishedAt: Date;
   channelId: string;
   title: string;
