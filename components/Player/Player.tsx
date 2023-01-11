@@ -65,8 +65,19 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
         <button onClick={() => console.log(videos)}>aaa</button>
         <p>{currentlyPlaying.snippet.title}</p>
       </div>
-      <Embed currentlyPlaying={currentlyPlaying} next={next} />
-      <Controls next={next} prev={prev} shuffle={shuffle} />
+      <Embed
+        currentlyPlaying={currentlyPlaying}
+        next={next}
+        setIsPaused={setIsPaused}
+        isPaused={isPaused}
+      />
+      <Controls
+        next={next}
+        prev={prev}
+        shuffle={shuffle}
+        setIsPaused={setIsPaused}
+        isPaused={isPaused}
+      />
       <List videos={videos} addUpNext={addUpNext} />
     </div>
   );
