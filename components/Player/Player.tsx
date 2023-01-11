@@ -39,16 +39,12 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
       setCurrentlyPlaying(videos[playingIndex + 1]);
     }
     //Only add to lastPlayed if video was playable
-    console.log(error);
-
     if (!error) {
       setLastPlayed((prev) => [...prev, currentlyPlaying]);
     }
   };
 
   const prev = () => {
-    console.log(lastPlayed);
-
     if (!lastPlayed.length) return;
     setCurrentlyPlaying(lastPlayed[lastPlayed.length - 1]);
     setLastPlayed((prev) => prev.slice(0, -1));
