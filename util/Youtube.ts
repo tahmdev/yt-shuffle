@@ -23,7 +23,12 @@ export class Youtube {
       const nextPage = await this.getAllVideosFromPlaylist(id, nextPageToken);
       videos = [...videos, ...nextPage];
     }
-    return videos;
+
+    const availableVideos = videos.filter(
+      (e) => e.snippet.videoOwnerChannelId !== undefined
+    );
+
+    return availableVideos;
   };
 
   static getPlaylistInfo = async (id: String): Promise<IPlaylist> => {
