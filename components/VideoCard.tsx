@@ -3,6 +3,9 @@ import { IVideo } from "../interfaces/IVideo";
 
 interface Props {
   video: IVideo;
+  addSkip: (id: string) => void;
+  removeSkip: (id: string) => void;
+  skip: Set<string>;
 }
 export const VideoCard: React.FC<Props> = ({
   video,
@@ -18,6 +21,15 @@ export const VideoCard: React.FC<Props> = ({
           alt={`Thumbnail of video ${video.snippet.title}`}
         />
         <div> {video.snippet.title} </div>
+      </button>
+
+      {skip.has(video.id) ? (
+        <button onClick={() => removeSkip(video.id)}>unskip</button>
+      ) : (
+        <button onClick={() => addSkip(video.id)}>skip</button>
+      )}
+
+      <button>queue</button>
     </div>
   );
 };

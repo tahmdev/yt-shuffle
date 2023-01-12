@@ -17,6 +17,7 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
     getRandom(videoProps)
   );
   const [isPaused, setIsPaused] = useState(false);
+  const [skip, setSkip] = useState<Set<string>>(new Set());
 
   const shuffle = () => {
     const newState = fisherYateShuffle(videos);
@@ -30,18 +31,22 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
     setVideos(newState);
   };
 
-  const next = (e: any, error = false) => {
+  const next = (e: any, error = false, skipIndex = 1) => {
+    let nextVideo: IVideo;
     if (upNext.length) {
-      setCurrentlyPlaying(upNext[0]);
+      nextVideo = upNext[0];
       setUpNext((prev) => prev.slice(1));
     } else {
       const playingIndex = videos.findIndex((e) => e === currentlyPlaying);
-      setCurrentlyPlaying(videos[playingIndex + 1]);
+      nextVideo = videos[playingIndex + skipIndex];
     }
-    //Only add to lastPlayed if video was playable
+    //Only add to lastPlayed if video was playable and not skipped
     if (!error) {
       setLastPlayed((prev) => [...prev, currentlyPlaying]);
     }
+
+    if (skip.has(nextVideo.id)) next(e, true, skipIndex + 1);
+    else setCurrentlyPlaying(nextVideo);
   };
 
   const prev = () => {
@@ -54,17 +59,24 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
     setUpNext((prev) => [...prev, video]);
   };
 
+  const addSkip = (id: string) => {
+    const newState = new Set(skip);
+    newState.add(id);
+    setSkip(newState);
+  };
+
+  const removeSkip = (id: string) => {
+    const newState = new Set(skip);
+    newState.delete(id);
+    setSkip(newState);
+  };
+
   useEffect(() => {
     shuffle();
   }, []);
 
   return (
     <div>
-      <div>
-        <h1>DEBUG</h1>
-        <button onClick={() => console.log(videos)}>aaa</button>
-        <p>{currentlyPlaying.snippet.title}</p>
-      </div>
       <Embed
         currentlyPlaying={currentlyPlaying}
         next={next}
@@ -78,7 +90,13 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
         setIsPaused={setIsPaused}
         isPaused={isPaused}
       />
-      <List videos={videos} addUpNext={addUpNext} />
+      <List
+        videos={videos}
+        addUpNext={addUpNext}
+        addSkip={addSkip}
+        removeSkip={removeSkip}
+        skip={skip}
+      />
     </div>
   );
 };
