@@ -31,7 +31,7 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
     setVideos(newState);
   };
 
-  const next = (e: any, error = false, skipIndex = 1) => {
+  const next = (_: any = null, error = false, skipIndex = 1) => {
     let nextVideo: IVideo;
     if (upNext.length) {
       nextVideo = upNext[0];
@@ -45,7 +45,7 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
       setLastPlayed((prev) => [...prev, currentlyPlaying]);
     }
 
-    if (skip.has(nextVideo.id)) next(e, true, skipIndex + 1);
+    if (skip.has(nextVideo.id)) next(_, true, skipIndex + 1);
     else setCurrentlyPlaying(nextVideo);
   };
 
@@ -78,7 +78,7 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
   return (
     <div>
       <Embed
-        currentlyPlaying={currentlyPlaying}
+        video={currentlyPlaying}
         next={next}
         setIsPaused={setIsPaused}
         isPaused={isPaused}
