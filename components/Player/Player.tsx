@@ -29,6 +29,9 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
       newState[0],
     ];
     setVideos(newState);
+  const play = (video: IVideo) => {
+    setLastPlayed((prev) => [...prev, currentlyPlaying]);
+    setCurrentlyPlaying(video);
   };
 
   const next = (_: any = null, error = false, skipIndex = 1) => {
@@ -96,6 +99,7 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
         addSkip={addSkip}
         removeSkip={removeSkip}
         skip={skip}
+        play={play}
       />
     </div>
   );

@@ -7,6 +7,7 @@ interface Props {
   addSkip: (id: string) => void;
   removeSkip: (id: string) => void;
   skip: Set<string>;
+  play: (video: IVideo) => void;
 }
 export const List: React.FC<Props> = ({
   addUpNext,
@@ -14,6 +15,7 @@ export const List: React.FC<Props> = ({
   addSkip,
   removeSkip,
   skip,
+  play,
 }) => {
   return (
     <div>
@@ -21,7 +23,7 @@ export const List: React.FC<Props> = ({
         {videos.map((video, i) => (
           <li key={i}>
             <div className="flex">
-              <button className="flex" onClick={() => console.log(video)}>
+              <button className="flex" onClick={() => play(video)}>
                 <img
                   src={video.snippet.thumbnails.default.url}
                   alt={`Thumbnail of video ${video.snippet.title}`}
