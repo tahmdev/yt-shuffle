@@ -52,7 +52,8 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
       setLastPlayed((prev) => [...prev, currentlyPlaying]);
     }
 
-    if (skip.has(nextVideo.id)) next(_, true, skipIndex + 1);
+    if (!nextVideo) next(_, true, skipIndex - videos.length);
+    else if (skip.has(nextVideo.id)) next(_, true, skipIndex + 1);
     else setCurrentlyPlaying(nextVideo);
   };
 
