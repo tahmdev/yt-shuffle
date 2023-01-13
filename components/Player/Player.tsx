@@ -60,6 +60,7 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
     if (!lastPlayed.length) return;
     setCurrentlyPlaying(lastPlayed[lastPlayed.length - 1]);
     setLastPlayed((prev) => prev.slice(0, -1));
+    setUpNext((prev) => [currentlyPlaying, ...prev]);
   };
 
   const addUpNext = (video: IVideo) => {
