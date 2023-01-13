@@ -29,6 +29,10 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
       newState[0],
     ];
     setVideos(newState);
+    setUpNext([]);
+    setLastPlayed([]);
+  };
+
   const play = (video: IVideo) => {
     setLastPlayed((prev) => [...prev, currentlyPlaying]);
     setCurrentlyPlaying(video);
