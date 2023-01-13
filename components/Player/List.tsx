@@ -26,6 +26,7 @@ export const List: React.FC<Props> = ({
               addSkip={addSkip}
               removeSkip={removeSkip}
               skip={skip}
+              addUpNext={addUpNext}
             />
           </li>
         ))}

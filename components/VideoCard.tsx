@@ -6,12 +6,14 @@ interface Props {
   addSkip: (id: string) => void;
   removeSkip: (id: string) => void;
   skip: Set<string>;
+  addUpNext: (video: IVideo) => void;
 }
 export const VideoCard: React.FC<Props> = ({
   video,
   addSkip,
   removeSkip,
   skip,
+  addUpNext,
 }) => {
   return (
     <div className="flex">
@@ -29,7 +31,7 @@ export const VideoCard: React.FC<Props> = ({
         <button onClick={() => addSkip(video.id)}>skip</button>
       )}
 
-      <button>queue</button>
+      <button onClick={() => addUpNext(video)}>queue</button>
     </div>
   );
 };
