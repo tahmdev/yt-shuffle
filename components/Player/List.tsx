@@ -1,6 +1,5 @@
 import React from "react";
 import { IVideo } from "../../interfaces/IVideo";
-import { VideoCard } from "../VideoCard";
 
 interface Props {
   videos: IVideo[];
@@ -19,15 +18,25 @@ export const List: React.FC<Props> = ({
   return (
     <div>
       <ul>
-        {videos.map((el, i) => (
+        {videos.map((video, i) => (
           <li key={i}>
-            <VideoCard
-              video={el}
-              addSkip={addSkip}
-              removeSkip={removeSkip}
-              skip={skip}
-              addUpNext={addUpNext}
-            />
+            <div className="flex">
+              <button className="flex" onClick={() => console.log(video)}>
+                <img
+                  src={video.snippet.thumbnails.default.url}
+                  alt={`Thumbnail of video ${video.snippet.title}`}
+                />
+                <div> {video.snippet.title} </div>
+              </button>
+
+              {skip.has(video.id) ? (
+                <button onClick={() => removeSkip(video.id)}>unskip</button>
+              ) : (
+                <button onClick={() => addSkip(video.id)}>skip</button>
+              )}
+
+              <button onClick={() => addUpNext(video)}>queue</button>
+            </div>
           </li>
         ))}
       </ul>
