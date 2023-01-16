@@ -1,3 +1,4 @@
+import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { IVideo } from "../../interfaces/IVideo";
 import { getRandom } from "../../util/getRandom";
@@ -8,8 +9,9 @@ import { List } from "./List";
 
 interface Props {
   videoProps: IVideo[];
+  title?: boolean;
 }
-export const Player: React.FC<Props> = ({ videoProps }) => {
+export const Player: React.FC<Props> = ({ videoProps, title }) => {
   const [videos, setVideos] = useState(videoProps);
   const [upNext, setUpNext] = useState<IVideo[]>([]);
   const [lastPlayed, setLastPlayed] = useState<IVideo[]>([]);
@@ -85,28 +87,35 @@ export const Player: React.FC<Props> = ({ videoProps }) => {
   }, []);
 
   return (
-    <div>
-      <Embed
-        video={currentlyPlaying}
-        next={next}
-        setIsPaused={setIsPaused}
-        isPaused={isPaused}
-      />
-      <Controls
-        next={next}
-        prev={prev}
-        shuffle={shuffle}
-        setIsPaused={setIsPaused}
-        isPaused={isPaused}
-      />
-      <List
-        videos={videos}
-        addUpNext={addUpNext}
-        addSkip={addSkip}
-        removeSkip={removeSkip}
-        skip={skip}
-        play={play}
-      />
-    </div>
+    <>
+      {title && (
+        <Head>
+          <title> {currentlyPlaying.snippet.title} </title>
+        </Head>
+      )}
+      <div>
+        <Embed
+          video={currentlyPlaying}
+          next={next}
+          setIsPaused={setIsPaused}
+          isPaused={isPaused}
+        />
+        <Controls
+          next={next}
+          prev={prev}
+          shuffle={shuffle}
+          setIsPaused={setIsPaused}
+          isPaused={isPaused}
+        />
+        <List
+          videos={videos}
+          addUpNext={addUpNext}
+          addSkip={addSkip}
+          removeSkip={removeSkip}
+          skip={skip}
+          play={play}
+        />
+      </div>
+    </>
   );
 };
