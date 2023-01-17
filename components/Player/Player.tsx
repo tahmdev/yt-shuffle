@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React, { useEffect, useState } from "react";
+import React, { Reducer, useEffect, useReducer, useState } from "react";
 import { IVideo } from "../../interfaces/IVideo";
 import { getRandom } from "../../util/getRandom";
 import { fisherYateShuffle } from "../../util/shuffle";
@@ -11,110 +11,125 @@ interface Props {
   videoProps: IVideo[];
   title?: boolean;
 }
+
+export type PlayerState = {
+  videos: IVideo[];
+  queue: IVideo[];
+  lastPlayed: IVideo[];
+  currentlyPlaying: IVideo;
+  skip: Set<string>;
+  playing: boolean;
+};
+
+const initializeState = (videos: IVideo[]): PlayerState => {
+  return {
+    videos: videos,
+    currentlyPlaying: getRandom(videos),
+    playing: true,
+    lastPlayed: [],
+    skip: new Set(),
+    queue: [],
+  };
+};
+
+export type PlayerAction =
+  | { type: "PLAY_VIDEO"; payload: IVideo }
+  | { type: "SHUFFLE" }
+  | { type: "NEXT"; payload: { error: boolean } }
+  | { type: "PREV" }
+  | { type: "QUEUE_ADD"; payload: IVideo }
+  | { type: "SKIP_ADD"; payload: IVideo }
+  | { type: "SKIP_REMOVE"; payload: IVideo }
+  | { type: "SET_PAUSE"; payload: boolean };
+
+const playerReducer: Reducer<PlayerState, PlayerAction> = (state, action) => {
+  switch (action.type) {
+    case "PLAY_VIDEO": {
+      return {
+        ...state,
+        currentlyPlaying: action.payload,
+        lastPlayed: [...state.lastPlayed, state.currentlyPlaying],
+      };
+    }
+    case "SHUFFLE": {
+      const shuffledVideos = fisherYateShuffle(state.videos);
+      //Keep currently playing song at index 0
+      const i = shuffledVideos.findIndex((e) => e === state.currentlyPlaying);
+      [shuffledVideos[0], shuffledVideos[i]] = [
+        shuffledVideos[i],
+        shuffledVideos[0],
+      ];
+      return { ...state, videos: shuffledVideos, upNext: [], lastPlayed: [] };
+    }
+    case "NEXT": {
+      let i = state.videos.findIndex((e) => e === state.currentlyPlaying);
+      const nextVideo =
+        [
+          ...state.queue,
+          ...state.videos.slice(i + 1),
+          ...state.videos.slice(0, i + 1),
+        ].find((e) => !state.skip.has(e.id)) ?? state.videos[0];
+      return {
+        ...state,
+        currentlyPlaying: nextVideo,
+        upNext: state.queue.slice(1),
+        lastPlayed: action.payload.error
+          ? [...state.lastPlayed]
+          : [...state.lastPlayed, state.currentlyPlaying],
+      };
+    }
+    case "PREV": {
+      if (!state.lastPlayed.length) return { ...state };
+      return {
+        ...state,
+        currentlyPlaying: state.lastPlayed[state.lastPlayed.length - 1],
+        lastPlayed: state.lastPlayed.slice(0, -1),
+        upNext: [state.currentlyPlaying, ...state.queue],
+      };
+    }
+    case "QUEUE_ADD": {
+      return { ...state, queue: [...state.queue, action.payload] };
+    }
+    case "SKIP_ADD": {
+      const newSkip = new Set(state.skip);
+      newSkip.add(action.payload.id);
+      return { ...state, skip: newSkip };
+    }
+    case "SKIP_REMOVE": {
+      const newSkip = new Set(state.skip);
+      newSkip.delete(action.payload.id);
+      return { ...state, skip: newSkip };
+    }
+    case "SET_PAUSE": {
+      return { ...state, playing: action.payload };
+    }
+    default: {
+      return { ...state };
+    }
+  }
+};
+
 export const Player: React.FC<Props> = ({ videoProps, title }) => {
-  const [videos, setVideos] = useState(videoProps);
-  const [upNext, setUpNext] = useState<IVideo[]>([]);
-  const [lastPlayed, setLastPlayed] = useState<IVideo[]>([]);
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<IVideo>(
-    getRandom(videoProps)
+  const [state, dispatch] = useReducer(
+    playerReducer,
+    initializeState(videoProps)
   );
-  const [isPaused, setIsPaused] = useState(false);
-  const [skip, setSkip] = useState<Set<string>>(new Set());
-
-  const shuffle = () => {
-    const newState = fisherYateShuffle(videos);
-
-    //Keep currentlyPlaying as first entry
-    const playingIndex = newState.findIndex((e) => e === currentlyPlaying);
-    [newState[0], newState[playingIndex]] = [
-      newState[playingIndex],
-      newState[0],
-    ];
-    setVideos(newState);
-    setUpNext([]);
-    setLastPlayed([]);
-  };
-
-  const play = (video: IVideo) => {
-    setLastPlayed((prev) => [...prev, currentlyPlaying]);
-    setCurrentlyPlaying(video);
-  };
-
-  const next = (_: any = null, error = false, skipIndex = 1) => {
-    let nextVideo: IVideo;
-    if (upNext.length) {
-      nextVideo = upNext[0];
-      setUpNext((prev) => prev.slice(1));
-    } else {
-      const playingIndex = videos.findIndex((e) => e === currentlyPlaying);
-      nextVideo = videos[playingIndex + skipIndex];
-    }
-    //Only add to lastPlayed if video was playable and not skipped
-    if (!error) {
-      setLastPlayed((prev) => [...prev, currentlyPlaying]);
-    }
-
-    if (!nextVideo) next(_, true, skipIndex - videos.length);
-    else if (skip.has(nextVideo.id)) next(_, true, skipIndex + 1);
-    else setCurrentlyPlaying(nextVideo);
-  };
-
-  const prev = () => {
-    if (!lastPlayed.length) return;
-    setCurrentlyPlaying(lastPlayed[lastPlayed.length - 1]);
-    setLastPlayed((prev) => prev.slice(0, -1));
-    setUpNext((prev) => [currentlyPlaying, ...prev]);
-  };
-
-  const addUpNext = (video: IVideo) => {
-    setUpNext((prev) => [...prev, video]);
-  };
-
-  const addSkip = (id: string) => {
-    const newState = new Set(skip);
-    newState.add(id);
-    setSkip(newState);
-  };
-
-  const removeSkip = (id: string) => {
-    const newState = new Set(skip);
-    newState.delete(id);
-    setSkip(newState);
-  };
 
   useEffect(() => {
-    shuffle();
+    dispatch({ type: "SHUFFLE" });
   }, []);
 
   return (
     <>
       {title && (
         <Head>
-          <title> {currentlyPlaying.snippet.title} </title>
+          <title> {state.currentlyPlaying.snippet.title} </title>
         </Head>
       )}
       <div>
-        <Embed
-          video={currentlyPlaying}
-          next={next}
-          setIsPaused={setIsPaused}
-          isPaused={isPaused}
-        />
-        <Controls
-          next={next}
-          prev={prev}
-          shuffle={shuffle}
-          setIsPaused={setIsPaused}
-          isPaused={isPaused}
-        />
-        <List
-          videos={videos}
-          addUpNext={addUpNext}
-          addSkip={addSkip}
-          removeSkip={removeSkip}
-          skip={skip}
-          play={play}
-        />
+        <Embed state={state} dispatch={dispatch} />
+        <Controls state={state} dispatch={dispatch} />
+        <List state={state} dispatch={dispatch} />
       </div>
     </>
   );

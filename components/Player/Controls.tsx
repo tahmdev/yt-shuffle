@@ -1,27 +1,25 @@
-import React, { SetStateAction } from "react";
+import React, { Dispatch } from "react";
+import { PlayerAction, PlayerState } from "./Player";
 
 interface Props {
-  next: (e: any, error?: boolean) => void;
-  prev: () => void;
-  shuffle: () => void;
-  setIsPaused: React.Dispatch<SetStateAction<boolean>>;
-  isPaused: boolean;
+  state: PlayerState;
+  dispatch: Dispatch<PlayerAction>;
 }
-export const Controls: React.FC<Props> = ({
-  next,
-  prev,
-  shuffle,
-  setIsPaused,
-  isPaused,
-}) => {
+export const Controls: React.FC<Props> = ({ state, dispatch }) => {
   return (
     <div>
-      <button onClick={prev}>prev</button>
-      <button onClick={() => setIsPaused((prev) => !prev)}>
-        {isPaused ? "play" : "pause"}
+      <button onClick={() => dispatch({ type: "PREV" })}>prev</button>
+      <button
+        onClick={() => dispatch({ type: "SET_PAUSE", payload: !state.playing })}
+      >
+        {state.playing ? "pause" : "play"}
       </button>
-      <button onClick={next}>next</button>
-      <button onClick={shuffle}>shuffle</button>
+      <button
+        onClick={() => dispatch({ type: "NEXT", payload: { error: false } })}
+      >
+        next
+      </button>
+      <button onClick={() => dispatch({ type: "SHUFFLE" })}>shuffle</button>
     </div>
   );
 };

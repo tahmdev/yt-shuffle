@@ -1,29 +1,22 @@
-import React, { SetStateAction } from "react";
+import React, { Dispatch } from "react";
 import ReactPlayer from "react-player";
-import { IVideo } from "../../interfaces/IVideo";
+import { PlayerAction, PlayerState } from "./Player";
 
 interface Props {
-  video: IVideo;
-  next: (_?: any, error?: boolean) => void;
-  isPaused: boolean;
-  setIsPaused: React.Dispatch<SetStateAction<boolean>>;
+  state: PlayerState;
+  dispatch: Dispatch<PlayerAction>;
 }
-export const Embed: React.FC<Props> = ({
-  video,
-  next,
-  isPaused,
-  setIsPaused,
-}) => {
+export const Embed: React.FC<Props> = ({ state, dispatch }) => {
   return (
     <div>
       <ReactPlayer
-        url={`https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`}
-        playing={!isPaused}
+        url={`https://www.youtube.com/watch?v=${state.currentlyPlaying.snippet.resourceId.videoId}`}
+        playing={state.playing}
         controls={true}
-        onEnded={next}
-        onPause={() => setIsPaused(true)}
-        onPlay={() => setIsPaused(false)}
-        onError={next}
+        onEnded={() => dispatch({ type: "NEXT", payload: { error: false } })}
+        onPause={() => dispatch({ type: "SET_PAUSE", payload: false })}
+        onPlay={() => dispatch({ type: "SET_PAUSE", payload: true })}
+        onError={() => dispatch({ type: "NEXT", payload: { error: true } })}
         muted={true}
         height={390}
         width={640}
