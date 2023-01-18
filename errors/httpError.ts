@@ -1,13 +1,13 @@
 export class HttpError extends Error {
   code: number;
-  constructor(code: number) {
-    const msg = errorCodes[code] || "Something went wrong";
+  constructor(code: number, msg?: string) {
+    if (!msg) msg = defaultMessages[code] || "Something went wrong";
     super(msg);
     this.code = code;
   }
 }
 
-const errorCodes: IErrorCodes = {
+const defaultMessages: IDefaultMessages = {
   400: "Bad Request",
   401: "Unauthorized",
   403: "Forbidden",
@@ -18,6 +18,6 @@ const errorCodes: IErrorCodes = {
   504: "Gateway Timeout",
 };
 
-interface IErrorCodes {
+interface IDefaultMessages {
   [key: number]: string;
 }
