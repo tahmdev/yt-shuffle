@@ -13,7 +13,10 @@ export class Youtube {
       `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${id}&key=${key}&pageToken=${token}`
     );
     if (!response.ok)
-      throw new Error("Received an invalid response from the Youtube API");
+      throw new HttpError(
+        502,
+        "Received an invalid response from the Youtube API"
+      );
 
     const json = await response.json();
     const { items, nextPageToken } = json;
@@ -37,9 +40,16 @@ export class Youtube {
       `https://www.googleapis.com/youtube/v3/playlists?part=contentDetails,snippet,status&id=${id}&key=${key}`
     );
     if (!response.ok)
-      throw new Error("Received an invalid response from the Youtube API");
+      throw new HttpError(
+        502,
+        "Received an invalid response from the Youtube API"
+      );
     const json = await response.json();
-    if (json.items.length == 0) throw new HttpError(404);
+    if (json.items.length == 0)
+      throw new HttpError(
+        404,
+        `Could not find playlist ${id}. Make sure it's not private.`
+      );
     return json.items[0];
   };
 
