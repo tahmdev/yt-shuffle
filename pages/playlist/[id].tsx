@@ -1,17 +1,26 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Player } from "../../components/Player/Player";
 import { IVideo } from "../../interfaces/IVideo";
 import styles from "../styles/playlists.module.css";
+import { ToastContext } from "../_app";
 
 const Playlists: NextPage = () => {
   const router = useRouter();
   const [videos, setVideos] = useState<IVideo[]>();
+  const toastDispatch = useContext(ToastContext).dispatch;
 
   async function addVideos(id: string) {
     const response = await fetch(`../api/videos/${id}`);
-    if (!response.ok) throw new Error();
+    if (!response.ok) {
+      const err = await response.json();
+      toastDispatch({
+        type: "ADD",
+        payload: { type: "error", text: err.msg },
+      });
+      return;
+    }
     const videos: IVideo[] = await response.json();
     setVideos(videos);
   }
