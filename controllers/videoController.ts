@@ -6,10 +6,13 @@ import { Youtube } from "../util/Youtube";
 export class VideoController {
   static get = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-      const { id } = req.query;
-      if (typeof id !== "string") throw new HttpError(400);
-      const videos = await Youtube.getAllVideosFromPlaylist(id);
-      res.status(200).json(videos);
+      const { ids } = req.query;
+      if (typeof ids !== "string") throw new HttpError(400);
+      const idArray = ids.split(",");
+      const promises = idArray.map((e) => Youtube.getAllVideosFromPlaylist(e));
+      const videos = await Promise.all(promises);
+      const flatVideos = videos.flat();
+      res.status(200).json(flatVideos);
     } catch (error) {
       httpErrorHandling(error, res);
     }

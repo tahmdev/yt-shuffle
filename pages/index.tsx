@@ -1,10 +1,12 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useContext, useEffect, useState } from "react";
 import { PlaylistCard } from "../components/PlaylistCard";
 import useLocalstorage from "../hooks/useLocalStorage";
 import IPlaylist from "../interfaces/IPlaylist";
 import styles from "../styles/Home.module.css";
 import { Youtube } from "../util/Youtube";
+import { ToastContext } from "./_app";
 
 export default function Home() {
   const [localPlaylistIDs, setLocalPlaylistIDs] = useLocalstorage<string[]>(
@@ -12,12 +14,21 @@ export default function Home() {
     []
   );
   const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
+  const [selectedPlaylists, setSelectedPlaylists] = useState<string[]>([]);
   const [currentInput, setCurrentInput] = useState<string>("");
+  const toastDispatch = useContext(ToastContext).dispatch;
 
   async function addPlaylist(idOrUrl: string) {
     const id = Youtube.playlistIdFromUrl(idOrUrl);
     const response = await fetch(`api/playlist/${id}`);
-    if (!response.ok) return;
+    if (!response.ok) {
+      const err = await response.json();
+      toastDispatch({
+        type: "ADD",
+        payload: { type: "error", text: err.msg },
+      });
+      return;
+    }
     const newPlaylist: IPlaylist = await response.json();
 
     setPlaylists((prev) =>
@@ -42,7 +53,7 @@ export default function Home() {
       <Head>
         <title>Youtube Shuffle</title>
         <meta
-          name="description"
+          name="Youtube Shuffle"
           content="Shuffle and combine large Youtube playlists"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -59,15 +70,21 @@ export default function Home() {
           <button onClick={() => addPlaylist(currentInput)}>add</button>
         </div>
 
+        <h2>Playlists</h2>
         <ul>
           {playlists.map((e, i) => {
             return (
               <li key={i}>
-                <PlaylistCard playlist={e} removePlaylist={removePlaylist} />
+                <PlaylistCard
+                  playlist={e}
+                  removePlaylist={removePlaylist}
+                  setSelectedPlaylists={setSelectedPlaylists}
+                />
               </li>
             );
           })}
         </ul>
+        <Link href={`/playlist/${selectedPlaylists.join(",")}`}>Shuffle</Link>
       </main>
     </>
   );
