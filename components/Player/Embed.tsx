@@ -1,6 +1,6 @@
 import React, { Dispatch } from "react";
 import ReactPlayer from "react-player";
-import { PlayerAction, PlayerState } from "./Player";
+import { PlayerAction, PlayerState } from "./PlayerReducer";
 
 interface Props {
   state: PlayerState;
