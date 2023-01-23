@@ -6,7 +6,7 @@ export type ToastActions =
       type: "ADD";
       payload: {
         text: string;
-        type: "success" | "error" | "info";
+        type: "SUCCESS" | "ERROR" | "INFO";
       };
     }
   | {

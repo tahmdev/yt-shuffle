@@ -17,7 +17,7 @@ const Playlists: NextPage = () => {
       const err = await response.json();
       toastDispatch({
         type: "ADD",
-        payload: { type: "error", text: err.msg },
+        payload: { type: "ERROR", text: err.msg },
       });
       return;
     }
