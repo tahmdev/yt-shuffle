@@ -14,6 +14,7 @@ export default function Home() {
     []
   );
   const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
+  const [unloadedPlaylistIDs, setUnloadedPlaylistIDs] = useState<string[]>([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState<string[]>([]);
   const [currentInput, setCurrentInput] = useState<string>("");
   const toastDispatch = useContext(ToastContext).dispatch;
@@ -23,10 +24,23 @@ export default function Home() {
     const response = await fetch(`api/playlist/${id}`);
     if (!response.ok) {
       const err = await response.json();
-      toastDispatch({
-        type: "ADD",
-        payload: { type: "error", text: err.msg },
-      });
+      toastDispatch({ type: "ADD", payload: { type: "error", text: err.msg } });
+      return;
+    }
+
+    const newPlaylist: IPlaylist = await response.json();
+    setPlaylists((prev) =>
+      [...prev, newPlaylist].sort((a, b) =>
+        a.snippet.title.localeCompare(b.snippet.title)
+      )
+    );
+    setLocalPlaylistIDs([...new Set([...localPlaylistIDs, newPlaylist.id])]);
+  }
+
+  async function loadPlaylist(id: string) {
+    const response = await fetch(`api/playlist/${id}`);
+    if (!response.ok) {
+      setUnloadedPlaylistIDs((prev) => [...prev, id]);
       return;
     }
     const newPlaylist: IPlaylist = await response.json();
@@ -36,16 +50,20 @@ export default function Home() {
         a.snippet.title.localeCompare(b.snippet.title)
       )
     );
-    setLocalPlaylistIDs([...new Set([...localPlaylistIDs, newPlaylist.id])]);
   }
 
   function removePlaylist(id: string) {
     setPlaylists((prev) => prev.filter((e) => e.id !== id));
     setLocalPlaylistIDs((prev) => prev.filter((e) => e !== id));
+    setUnloadedPlaylistIDs((prev) => prev.filter((e) => e !== id));
+  }
+
+  function removeAllUnloaded() {
+    unloadedPlaylistIDs.forEach((id) => removePlaylist(id));
   }
 
   useEffect(() => {
-    localPlaylistIDs.forEach((e) => addPlaylist(e));
+    localPlaylistIDs.forEach((id) => loadPlaylist(id));
   }, []);
 
   return (
@@ -60,6 +78,28 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
+        {unloadedPlaylistIDs.length > 0 && (
+          <>
+            <p>
+              Unable to load {unloadedPlaylistIDs.length} playlists. Please make
+              sure they are not private.{" "}
+              <button onClick={removeAllUnloaded}>Remove all</button>
+            </p>
+            <ul>
+              {unloadedPlaylistIDs.map((id, idx) => {
+                return (
+                  <li key={idx}>
+                    Could not load
+                    <a href={`https://www.youtube.com/playlist?list=${id}`}>
+                      {id}
+                    </a>
+                    <button onClick={() => removePlaylist(id)}>Remove</button>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
         <div>
           <input
             name="playlist-input"
