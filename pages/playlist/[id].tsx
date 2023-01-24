@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Player } from "../../components/Player/Player";
 import { IVideo } from "../../interfaces/IVideo";
-import styles from "../styles/playlists.module.css";
 import { ToastContext } from "../_app";
 
 const Playlists: NextPage = () => {
