@@ -3,29 +3,27 @@ import IPlaylist from "../interfaces/IPlaylist";
 import { IVideo } from "../interfaces/IVideo";
 
 export class Youtube {
-  static getAllVideosFromPlaylist = async (
-    id: String,
-    token = ""
-  ): Promise<IVideo[]> => {
+  static getAllVideosFromPlaylist = async (id: String): Promise<IVideo[]> => {
     const key = process.env.API_KEY;
     let videos: IVideo[] = [];
-    const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${id}&key=${key}&pageToken=${token}`
-    );
-    if (!response.ok)
-      throw new HttpError(
-        502,
-        "Received an invalid response from the Youtube API"
+    let nextPageToken = "";
+
+    do {
+      console.log(nextPageToken);
+
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails,status&maxResults=50&playlistId=${id}&key=${key}&pageToken=${nextPageToken}`
       );
-
-    const json = await response.json();
-    const { items, nextPageToken } = json;
-    videos = [...videos, ...items];
-
-    if (nextPageToken) {
-      const nextPage = await this.getAllVideosFromPlaylist(id, nextPageToken);
-      videos = [...videos, ...nextPage];
-    }
+      if (!response.ok) {
+        throw new HttpError(
+          502,
+          "Received an invalid response from the Youtube API"
+        );
+      }
+      const json = await response.json();
+      videos = [...videos, ...json.items];
+      nextPageToken = json.nextPageToken;
+    } while (nextPageToken);
 
     const availableVideos = videos.filter(
       (e) => e.snippet.videoOwnerChannelId !== undefined
