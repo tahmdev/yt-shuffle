@@ -9,10 +9,8 @@ export class Youtube {
     let nextPageToken = "";
 
     do {
-      console.log(nextPageToken);
-
       const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails,status&maxResults=50&playlistId=${id}&key=${key}&pageToken=${nextPageToken}`
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${id}&key=${key}&pageToken=${nextPageToken}`
       );
       if (!response.ok) {
         throw new HttpError(
