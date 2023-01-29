@@ -138,6 +138,11 @@ export default function Home() {
                   : "pointer-events-none bg-blue-900 text-gray-400"
               }
             `}
+            href={
+              selectedPlaylists.length
+                ? `/playlist/${selectedPlaylists.join(",")}`
+                : ""
+            }
           >
             Shuffle
           </Link>
