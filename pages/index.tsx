@@ -4,7 +4,6 @@ import { useContext, useEffect, useState } from "react";
 import { PlaylistCard } from "../components/PlaylistCard";
 import useLocalstorage from "../hooks/useLocalStorage";
 import IPlaylist from "../interfaces/IPlaylist";
-import styles from "../styles/Home.module.css";
 import { Youtube } from "../util/Youtube";
 import { ToastContext } from "./_app";
 
@@ -77,7 +76,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
+      <main className="max-h-full min-h-screen overflow-hidden bg-gray-800 text-gray-100">
         {unloadedPlaylistIDs.length > 0 && (
           <>
             <p>
@@ -100,31 +99,49 @@ export default function Home() {
             </ul>
           </>
         )}
-        <div>
-          <input
-            name="playlist-input"
-            type="text"
-            onChange={(e) => setCurrentInput(e.target.value)}
-            placeholder="Playlist ID or URL"
-          />
-          <button onClick={() => addPlaylist(currentInput)}>add</button>
-        </div>
+        <div className=" mx-auto my-4 flex h-fit w-11/12 max-w-5xl flex-col items-center gap-3">
+          <div className="flex w-full justify-center gap-3">
+            <input
+              className=" w-full max-w-2xl rounded-sm p-1 text-black "
+              name="playlist-input"
+              type="text"
+              onChange={(e) => setCurrentInput(e.target.value)}
+              placeholder="Playlist ID or Youtube URL"
+            />
+            <button
+              className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+              onClick={() => addPlaylist(currentInput)}
+            >
+              Add
+            </button>
+          </div>
 
-        <h2>Playlists</h2>
-        <ul>
-          {playlists.map((e, i) => {
-            return (
-              <li key={i}>
-                <PlaylistCard
-                  playlist={e}
-                  removePlaylist={removePlaylist}
-                  setSelectedPlaylists={setSelectedPlaylists}
-                />
-              </li>
-            );
-          })}
-        </ul>
-        <Link href={`/playlist/${selectedPlaylists.join(",")}`}>Shuffle</Link>
+          <h2 className="text-3xl">Playlists</h2>
+          <ul className="flex w-full flex-col">
+            {playlists.map((e, i) => {
+              return (
+                <li key={i}>
+                  <PlaylistCard
+                    playlist={e}
+                    removePlaylist={removePlaylist}
+                    setSelectedPlaylists={setSelectedPlaylists}
+                  />
+                </li>
+              );
+            })}
+          </ul>
+          <Link
+            className={`inline-block w-full max-w-xs rounded py-2 px-4 text-center text-xl font-bold text-white
+              ${
+                selectedPlaylists.length
+                  ? "bg-blue-500 hover:bg-blue-700"
+                  : "pointer-events-none bg-blue-900 text-gray-400"
+              }
+            `}
+          >
+            Shuffle
+          </Link>
+        </div>
       </main>
     </>
   );
