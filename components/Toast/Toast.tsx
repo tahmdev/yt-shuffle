@@ -18,6 +18,7 @@ export const ToastDisplay: React.FC<Props> = ({
         {notifications.map((notification) => {
           return (
             <ToastNotification
+              key={notification.id}
               notification={notification}
               dispatch={dispatch}
               autoRemove={autoRemove}
