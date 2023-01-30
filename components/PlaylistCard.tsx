@@ -4,7 +4,7 @@ import IPlaylist from "../interfaces/IPlaylist";
 interface Props {
   playlist: IPlaylist;
   removePlaylist: (id: string) => void;
-  setSelectedPlaylists: Dispatch<SetStateAction<string[]>>;
+  setSelectedPlaylists: Dispatch<SetStateAction<IPlaylist[]>>;
 }
 export const PlaylistCard: React.FC<Props> = ({
   playlist,
@@ -15,10 +15,10 @@ export const PlaylistCard: React.FC<Props> = ({
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       setChecked(true);
-      setSelectedPlaylists((prev) => [...prev, playlist.id]);
+      setSelectedPlaylists((prev) => [...prev, playlist]);
     } else {
       setChecked(false);
-      setSelectedPlaylists((prev) => prev.filter((el) => el !== playlist.id));
+      setSelectedPlaylists((prev) => prev.filter((el) => el !== playlist));
     }
   };
   return (

@@ -14,7 +14,7 @@ export default function Home() {
   );
   const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
   const [unloadedPlaylistIDs, setUnloadedPlaylistIDs] = useState<string[]>([]);
-  const [selectedPlaylists, setSelectedPlaylists] = useState<string[]>([]);
+  const [selectedPlaylists, setSelectedPlaylists] = useState<IPlaylist[]>([]);
   const [currentInput, setCurrentInput] = useState<string>("");
   const toastDispatch = useContext(ToastContext).dispatch;
 
@@ -52,10 +52,10 @@ export default function Home() {
   }
 
   function removePlaylist(id: string) {
-    setPlaylists((prev) => prev.filter((e) => e.id !== id));
-    setLocalPlaylistIDs((prev) => prev.filter((e) => e !== id));
-    setUnloadedPlaylistIDs((prev) => prev.filter((e) => e !== id));
-    setSelectedPlaylists((prev) => prev.filter((e) => e !== id));
+    setPlaylists((prev) => prev.filter((el) => el.id !== id));
+    setLocalPlaylistIDs((prev) => prev.filter((el) => el !== id));
+    setUnloadedPlaylistIDs((prev) => prev.filter((el) => el !== id));
+    setSelectedPlaylists((prev) => prev.filter((el) => el.id !== id));
   }
 
   function removeAllUnloaded() {
