@@ -145,7 +145,10 @@ export default function Home() {
               : ""
           }
         >
-          Shuffle
+          {`Shuffle ${selectedPlaylists.reduce(
+            (acc, curr) => curr.contentDetails.itemCount + acc,
+            0
+          )} videos`}
         </Link>
       </main>
     </>
