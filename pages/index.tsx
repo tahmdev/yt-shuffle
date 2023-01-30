@@ -55,6 +55,7 @@ export default function Home() {
     setPlaylists((prev) => prev.filter((e) => e.id !== id));
     setLocalPlaylistIDs((prev) => prev.filter((e) => e !== id));
     setUnloadedPlaylistIDs((prev) => prev.filter((e) => e !== id));
+    setSelectedPlaylists((prev) => prev.filter((e) => e !== id));
   }
 
   function removeAllUnloaded() {
