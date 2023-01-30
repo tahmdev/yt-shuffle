@@ -77,7 +77,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="mx-auto flex w-11/12 max-w-5xl flex-col items-center gap-3 overflow-hidden bg-gray-800 text-gray-100 [&>*:first-child]:mt-4 [&>*:last-child]:mb-4">
+      <main className="mx-auto flex w-11/12 max-w-2xl flex-col items-center gap-3 overflow-hidden bg-gray-800 text-gray-100 [&>*:first-child]:mt-6 [&>*:last-child]:mb-6">
         <div className="flex w-full justify-center gap-3">
           <input
             className=" w-full max-w-2xl rounded-sm p-1 text-black "
@@ -118,7 +118,7 @@ export default function Home() {
         )}
 
         <h2 className="text-3xl">Playlists</h2>
-        <ul className="flex w-full flex-col">
+        <ul className="flex max-h-70vh w-full flex-col gap-2 overflow-y-scroll border-2 border-slate-100">
           {playlists.map((e, i) => {
             return (
               <li key={i}>
