@@ -1,9 +1,9 @@
-:root {
-  --background-color: rgba(0, 0, 0, 0.918);
-  --text-color: rgba(255, 255, 255, 0.945);
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html,
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
+  margin: 0;
+  height: 100%;
+  background-color: rgb(31 41 55);
 }
