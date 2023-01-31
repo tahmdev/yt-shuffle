@@ -141,7 +141,7 @@ export default function Home() {
             `}
           href={
             selectedPlaylists.length
-              ? `/playlist/${selectedPlaylists.join(",")}`
+              ? `/playlist/${selectedPlaylists.map((el) => el.id).join(",")}`
               : ""
           }
         >
