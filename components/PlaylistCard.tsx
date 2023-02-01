@@ -22,7 +22,11 @@ export const PlaylistCard: React.FC<Props> = ({
     }
   };
   return (
-    <div className={`flex ${checked ? "bg-slate-700" : "bg-slate-500"}`}>
+    <div
+      className={`flex ${
+        checked ? "bg-slate-700" : "bg-slate-500 hover:bg-slate-600"
+      }`}
+    >
       <input
         className="hidden"
         type="checkbox"
