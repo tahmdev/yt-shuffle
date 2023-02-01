@@ -12,7 +12,9 @@ export const List: React.FC<Props> = ({ state, dispatch }) => {
       {state.videos.map((video, i) => (
         <li key={i} className="flex h-20 w-full first:mt-3">
           <button
-            className="mr-2 ml-2 flex w-full items-center overflow-hidden rounded-md bg-slate-600 hover:bg-slate-700"
+            className={`mr-2 ml-2 flex w-full items-center overflow-hidden rounded-md bg-slate-600 hover:bg-slate-700 ${
+              state.skip.has(video) ? "bg-slate-800 text-gray-400" : ""
+            }`}
             onClick={() => dispatch({ type: "PLAY_VIDEO", payload: video })}
           >
             <img
@@ -37,8 +39,10 @@ export const List: React.FC<Props> = ({ state, dispatch }) => {
               Next
             </Button>
             <Button
-              className="px-2"
-              onClick={() => dispatch({ type: "SKIP_ADD", payload: video })}
+              className={`px-2 ${
+                state.skip.has(video) ? "bg-blue-900 hover:bg-blue-900" : ""
+              }`}
+              onClick={() => dispatch({ type: "SKIP_TOGGLE", payload: video })}
             >
               Skip
             </Button>
