@@ -31,7 +31,11 @@ const Playlists: NextPage = () => {
 
   if (!videos?.length) return <div>LOADING...</div>;
 
-  return <Player videoProps={videos} title />;
+  return (
+    <main className="flex h-full items-center justify-center overflow-hidden  text-gray-100">
+      <Player videoProps={videos} title />
+    </main>
+  );
 };
 
 export default Playlists;

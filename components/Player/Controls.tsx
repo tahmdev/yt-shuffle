@@ -7,19 +7,25 @@ interface Props {
 }
 export const Controls: React.FC<Props> = ({ state, dispatch }) => {
   return (
-    <div>
-      <button onClick={() => dispatch({ type: "PREV" })}>prev</button>
+    <div className="flex justify-center gap-5 p-3 [&>*]:text-4xl">
+      <button
+        aria-label="Previous song"
+        onClick={() => dispatch({ type: "PREV" })}
+      >
+        ⏮️
+      </button>
       <button
         onClick={() => dispatch({ type: "SET_PAUSE", payload: !state.playing })}
       >
-        {state.playing ? "pause" : "play"}
+        {state.playing ? "⏸️" : "▶️"}
       </button>
       <button
+        aria-label="Next song"
         onClick={() => dispatch({ type: "NEXT", payload: { error: false } })}
       >
-        next
+        ⏭️
       </button>
-      <button onClick={() => dispatch({ type: "SHUFFLE" })}>shuffle</button>
+      <button onClick={() => dispatch({ type: "SHUFFLE" })}>🔀</button>
     </div>
   );
 };

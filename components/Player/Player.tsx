@@ -40,10 +40,14 @@ export const Player: React.FC<Props> = ({ videoProps, title }) => {
           <title> {state.currentlyPlaying.snippet.title} </title>
         </Head>
       )}
-      <div>
-        <Embed state={state} dispatch={dispatch} />
-        <Controls state={state} dispatch={dispatch} />
-        <List state={state} dispatch={dispatch} />
+      <div className="flex h-full w-full basis-full flex-col ">
+        <div className="flex h-1/3 min-h-[18rem] w-full flex-col">
+          <Embed state={state} dispatch={dispatch} />
+          <Controls state={state} dispatch={dispatch} />
+        </div>
+        <div className="h-full w-full overflow-y-scroll border-t-2 border-slate-100">
+          <List state={state} dispatch={dispatch} />
+        </div>
       </div>
     </>
   );

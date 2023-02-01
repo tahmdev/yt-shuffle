@@ -8,7 +8,7 @@ interface Props {
 }
 export const Embed: React.FC<Props> = ({ state, dispatch }) => {
   return (
-    <div>
+    <div className="h-full">
       <ReactPlayer
         url={`https://www.youtube.com/watch?v=${state.currentlyPlaying.snippet.resourceId.videoId}`}
         playing={state.playing}
@@ -18,8 +18,8 @@ export const Embed: React.FC<Props> = ({ state, dispatch }) => {
         onPlay={() => dispatch({ type: "SET_PAUSE", payload: true })}
         onError={() => dispatch({ type: "NEXT", payload: { error: true } })}
         muted={true}
-        height={390}
-        width={640}
+        height={"100%"}
+        width={"100%"}
       />
     </div>
   );
