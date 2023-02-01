@@ -7,7 +7,7 @@ export type PlayerState = {
   queue: IVideo[];
   lastPlayed: IVideo[];
   currentlyPlaying: IVideo;
-  skip: Set<string>;
+  skip: Set<IVideo>;
   playing: boolean;
 };
 export type PlayerAction =
@@ -16,8 +16,7 @@ export type PlayerAction =
   | { type: "NEXT"; payload: { error: boolean } }
   | { type: "PREV" }
   | { type: "QUEUE_ADD"; payload: IVideo }
-  | { type: "SKIP_ADD"; payload: IVideo }
-  | { type: "SKIP_REMOVE"; payload: IVideo }
+  | { type: "SKIP_TOGGLE"; payload: IVideo }
   | { type: "SET_PAUSE"; payload: boolean };
 
 export const playerReducer: Reducer<PlayerState, PlayerAction> = (
@@ -49,7 +48,7 @@ export const playerReducer: Reducer<PlayerState, PlayerAction> = (
           ...state.queue,
           ...state.videos.slice(i + 1),
           ...state.videos.slice(0, i + 1),
-        ].find((e) => !state.skip.has(e.id)) ?? state.videos[0];
+        ].find((e) => !state.skip.has(e)) ?? state.videos[0];
       return {
         ...state,
         currentlyPlaying: nextVideo,
@@ -71,15 +70,16 @@ export const playerReducer: Reducer<PlayerState, PlayerAction> = (
     case "QUEUE_ADD": {
       return { ...state, queue: [...state.queue, action.payload] };
     }
-    case "SKIP_ADD": {
-      const newSkip = new Set(state.skip);
-      newSkip.add(action.payload.id);
-      return { ...state, skip: newSkip };
-    }
-    case "SKIP_REMOVE": {
-      const newSkip = new Set(state.skip);
-      newSkip.delete(action.payload.id);
-      return { ...state, skip: newSkip };
+    case "SKIP_TOGGLE": {
+      if (state.skip.has(action.payload)) {
+        const newSkip = new Set(state.skip);
+        newSkip.delete(action.payload);
+        return { ...state, skip: newSkip };
+      } else {
+        const newSkip = new Set(state.skip);
+        newSkip.add(action.payload);
+        return { ...state, skip: newSkip };
+      }
     }
     case "SET_PAUSE": {
       return { ...state, playing: action.payload };
