@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
+import { Button } from "../components/Button";
 import { PlaylistCard } from "../components/PlaylistCard";
 import useLocalstorage from "../hooks/useLocalStorage";
 import IPlaylist from "../interfaces/IPlaylist";
@@ -86,12 +87,7 @@ export default function Home() {
             onChange={(e) => setCurrentInput(e.target.value)}
             placeholder="Playlist ID or Youtube URL"
           />
-          <button
-            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-            onClick={() => addPlaylist(currentInput)}
-          >
-            Add
-          </button>
+          <Button onClick={() => addPlaylist(currentInput)}>Add</Button>
         </div>
 
         {unloadedPlaylistIDs.length > 0 && (
