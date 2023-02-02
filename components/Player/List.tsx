@@ -33,8 +33,10 @@ export const List: React.FC<Props> = ({ state, dispatch }) => {
           </button>
           <div className="ml-auto mr-2 flex w-fit gap-3 ">
             <Button
-              className="px-2"
-              onClick={() => dispatch({ type: "QUEUE_ADD", payload: video })}
+              className={`px-2 ${
+                state.queue.has(video) ? "bg-blue-900 hover:bg-blue-900" : ""
+              }`}
+              onClick={() => dispatch({ type: "QUEUE_TOGGLE", payload: video })}
             >
               Next
             </Button>
