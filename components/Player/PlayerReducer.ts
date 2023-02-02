@@ -1,6 +1,7 @@
 import { Reducer } from "react";
 import { IVideo } from "../../interfaces/IVideo";
 import { findAndRemoveAllBefore } from "../../util/removeAllBefore";
+import { setToggle } from "../../util/setToggle";
 import { fisherYateShuffle } from "../../util/shuffle";
 
 export type PlayerState = {
@@ -78,26 +79,14 @@ export const playerReducer: Reducer<PlayerState, PlayerAction> = (
       };
     }
     case "QUEUE_TOGGLE": {
-      if (state.queue.has(action.payload)) {
-        const newQueue = new Set(state.queue);
-        newQueue.delete(action.payload);
-        return { ...state, queue: newQueue };
-      } else {
-        const newQueue = new Set(state.queue);
-        newQueue.add(action.payload);
-        return { ...state, queue: newQueue };
-      }
+      const newQueue = new Set(state.queue);
+      setToggle(newQueue, action.payload);
+      return { ...state, queue: newQueue };
     }
     case "SKIP_TOGGLE": {
-      if (state.skip.has(action.payload)) {
-        const newSkip = new Set(state.skip);
-        newSkip.delete(action.payload);
-        return { ...state, skip: newSkip };
-      } else {
-        const newSkip = new Set(state.skip);
-        newSkip.add(action.payload);
-        return { ...state, skip: newSkip };
-      }
+      const newSkip = new Set(state.skip);
+      setToggle(newSkip, action.payload);
+      return { ...state, skip: newSkip };
     }
     case "SET_PAUSE": {
       return { ...state, playing: action.payload };
