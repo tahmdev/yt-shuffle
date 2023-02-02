@@ -19,7 +19,7 @@ const initializeState = (videos: IVideo[]): PlayerState => {
     playing: true,
     lastPlayed: [],
     skip: new Set(),
-    queue: [],
+    queue: new Set(),
   };
 };
 

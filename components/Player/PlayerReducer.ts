@@ -1,10 +1,11 @@
 import { Reducer } from "react";
 import { IVideo } from "../../interfaces/IVideo";
+import { findAndRemoveAllBefore } from "../../util/removeAllBefore";
 import { fisherYateShuffle } from "../../util/shuffle";
 
 export type PlayerState = {
   videos: IVideo[];
-  queue: IVideo[];
+  queue: Set<IVideo>;
   lastPlayed: IVideo[];
   currentlyPlaying: IVideo;
   skip: Set<IVideo>;
@@ -15,7 +16,7 @@ export type PlayerAction =
   | { type: "SHUFFLE" }
   | { type: "NEXT"; payload: { error: boolean } }
   | { type: "PREV" }
-  | { type: "QUEUE_ADD"; payload: IVideo }
+  | { type: "QUEUE_TOGGLE"; payload: IVideo }
   | { type: "SKIP_TOGGLE"; payload: IVideo }
   | { type: "SET_PAUSE"; payload: boolean };
 
@@ -42,17 +43,26 @@ export const playerReducer: Reducer<PlayerState, PlayerAction> = (
       return { ...state, videos: shuffledVideos, upNext: [], lastPlayed: [] };
     }
     case "NEXT": {
-      let i = state.videos.findIndex((e) => e === state.currentlyPlaying);
+      const playingIndex = state.videos.findIndex(
+        (e) => e === state.currentlyPlaying
+      );
       const nextVideo =
         [
           ...state.queue,
-          ...state.videos.slice(i + 1),
-          ...state.videos.slice(0, i + 1),
+          ...state.videos.slice(playingIndex + 1),
+          ...state.videos.slice(0, playingIndex + 1),
         ].find((e) => !state.skip.has(e)) ?? state.videos[0];
+
+      const newQueueArray = findAndRemoveAllBefore(
+        [...state.queue],
+        (e) => !state.skip.has(e),
+        true
+      );
+
       return {
         ...state,
         currentlyPlaying: nextVideo,
-        upNext: state.queue.slice(1),
+        queue: new Set(newQueueArray),
         lastPlayed: action.payload.error
           ? [...state.lastPlayed]
           : [...state.lastPlayed, state.currentlyPlaying],
@@ -67,8 +77,16 @@ export const playerReducer: Reducer<PlayerState, PlayerAction> = (
         upNext: [state.currentlyPlaying, ...state.queue],
       };
     }
-    case "QUEUE_ADD": {
-      return { ...state, queue: [...state.queue, action.payload] };
+    case "QUEUE_TOGGLE": {
+      if (state.queue.has(action.payload)) {
+        const newQueue = new Set(state.queue);
+        newQueue.delete(action.payload);
+        return { ...state, queue: newQueue };
+      } else {
+        const newQueue = new Set(state.queue);
+        newQueue.add(action.payload);
+        return { ...state, queue: newQueue };
+      }
     }
     case "SKIP_TOGGLE": {
       if (state.skip.has(action.payload)) {
