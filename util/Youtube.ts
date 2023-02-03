@@ -44,7 +44,7 @@ export class Youtube {
     if (json.items.length == 0)
       throw new HttpError(
         404,
-        `Could not find playlist ${id}. Make sure it's not private.`
+        `Could not find playlist ${id}. Please make sure you entered the correct ID and it is not private.`
       );
     return json.items[0];
   };
