@@ -7,6 +7,7 @@ export type ToastActions =
       payload: {
         text: string;
         type: "SUCCESS" | "ERROR" | "INFO";
+        timer?: number;
       };
     }
   | {
@@ -20,6 +21,7 @@ export interface Notification {
   type: string;
   text: string;
   id: number;
+  timer: number;
 }
 
 export const toastReducer: Reducer<Notification[], ToastActions> = (
@@ -31,7 +33,12 @@ export const toastReducer: Reducer<Notification[], ToastActions> = (
       count++;
       return [
         ...state,
-        { type: action.payload.type, text: action.payload.text, id: count },
+        {
+          type: action.payload.type,
+          text: action.payload.text,
+          id: count,
+          timer: action.payload.timer ?? 1000,
+        },
       ];
     case "REMOVE":
       return state.filter((a) => a.id !== action.payload.id);
