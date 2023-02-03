@@ -24,7 +24,10 @@ export default function Home() {
     const response = await fetch(`api/playlist/${id}`);
     if (!response.ok) {
       const err = await response.json();
-      toastDispatch({ type: "ADD", payload: { type: "ERROR", text: err.msg } });
+      toastDispatch({
+        type: "ADD",
+        payload: { type: "ERROR", text: err.msg, timer: 5000 },
+      });
       return;
     }
 

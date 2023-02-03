@@ -17,7 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <ToastDisplay
           dispatch={toastDispatch}
           notifications={toastNotifications}
-          autoRemove={5000}
+          maxNotifications={3}
         />
         <Component {...pageProps} />
       </ToastContext.Provider>
