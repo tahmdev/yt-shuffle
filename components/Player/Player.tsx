@@ -10,6 +10,7 @@ import { playerReducer, PlayerState } from "./PlayerReducer";
 interface Props {
   videoProps: IVideo[];
   title?: boolean;
+  background?: boolean;
 }
 
 const initializeState = (videos: IVideo[]): PlayerState => {
@@ -23,7 +24,7 @@ const initializeState = (videos: IVideo[]): PlayerState => {
   };
 };
 
-export const Player: React.FC<Props> = ({ videoProps, title }) => {
+export const Player: React.FC<Props> = ({ videoProps, title, background }) => {
   const [state, dispatch] = useReducer(
     playerReducer,
     initializeState(videoProps)
@@ -60,10 +61,13 @@ export const Player: React.FC<Props> = ({ videoProps, title }) => {
           <List state={state} dispatch={dispatch} />
         </div>
       </div>
-      <div
-        className="absolute h-full w-full bg-slate-900 bg-cover bg-center blur-2xl"
-        ref={backgroundRef}
-      ></div>
+
+      {background && (
+        <div
+          className="absolute h-full w-full bg-slate-900 bg-cover bg-center blur-2xl "
+          ref={backgroundRef}
+        ></div>
+      )}
     </>
   );
 };

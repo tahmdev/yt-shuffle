@@ -33,7 +33,7 @@ const Playlists: NextPage = () => {
 
   return (
     <main className="flex h-full items-center justify-center overflow-hidden  text-gray-100">
-      <Player videoProps={videos} title />
+      <Player videoProps={videos} title background />
     </main>
   );
 };
