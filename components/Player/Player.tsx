@@ -64,7 +64,7 @@ export const Player: React.FC<Props> = ({ videoProps, title, background }) => {
 
       {background && (
         <div
-          className="absolute h-full w-full bg-slate-900 bg-cover bg-center blur-2xl "
+          className="absolute h-full w-full bg-slate-900 bg-cover bg-center blur-2xl transition-all"
           ref={backgroundRef}
         ></div>
       )}
