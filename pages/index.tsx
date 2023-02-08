@@ -94,26 +94,40 @@ export default function Home() {
         </div>
 
         {unloadedPlaylistIDs.length > 0 && (
-          <>
-            <p>
-              Unable to load {unloadedPlaylistIDs.length} playlists. Please make
-              sure they are not private.{" "}
+          <div className="w-full rounded-md border-2 border-red-900 bg-red-800 p-2 text-gray-100 shadow-inner ">
+            <div className="flex gap-2 font-bold">
+              <p className="">
+                Unable to load {unloadedPlaylistIDs.length} playlists. Please
+                make sure they are not private.
+              </p>
               <button onClick={removeAllUnloaded}>Remove all</button>
-            </p>
-            <ul>
+            </div>
+
+            <ul className="mt-4">
               {unloadedPlaylistIDs.map((id, idx) => {
                 return (
-                  <li key={idx}>
-                    Could not load
-                    <a href={`https://www.youtube.com/playlist?list=${id}`}>
-                      {id}
-                    </a>
-                    <button onClick={() => removePlaylist(id)}>Remove</button>
+                  <li key={idx} className="mb-1 flex gap-2 last:mb-0">
+                    <p className="overflow-hidden overflow-ellipsis">
+                      Could not load{" "}
+                      <a
+                        className="underline"
+                        href={`https://www.youtube.com/playlist?list=${id}`}
+                      >
+                        {id}
+                      </a>
+                    </p>
+
+                    <button
+                      className="underline"
+                      onClick={() => removePlaylist(id)}
+                    >
+                      Remove
+                    </button>
                   </li>
                 );
               })}
             </ul>
-          </>
+          </div>
         )}
 
         <h2 className="text-3xl">Playlists</h2>
