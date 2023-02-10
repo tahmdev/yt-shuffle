@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { Player } from "../../components/Player/Player";
 import { IVideo } from "../../interfaces/IVideo";
 import { ToastContext } from "../_app";
@@ -29,7 +30,12 @@ const Playlists: NextPage = () => {
     addVideos(router.query.id);
   }, [router.query]);
 
-  if (!videos?.length) return <div>LOADING...</div>;
+  if (!videos?.length)
+    return (
+      <div className="flex h-full w-full items-center justify-center text-4xl text-white">
+        <LoadingSpinner /> Loading...
+      </div>
+    );
 
   return (
     <main className="flex h-full items-center justify-center overflow-hidden  text-gray-100">
