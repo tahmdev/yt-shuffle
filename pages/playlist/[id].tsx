@@ -19,6 +19,7 @@ const Playlists: NextPage = () => {
         type: "ADD",
         payload: { type: "ERROR", text: err.msg, timer: 6000 },
       });
+      router.push("/");
       return;
     }
     const videos: IVideo[] = await response.json();
